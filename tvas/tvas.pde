@@ -7,7 +7,7 @@ import controlP5.*;
 final int SKETCH_WIDTH = 900;
 final int SKETCH_HEIGHT = 650;
 
-// GUI components
+// GUI related vars
 ControlP5 cp5;
 String[] buttonBarLabels = {
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
@@ -29,10 +29,15 @@ void setup() {
   cp5 = new ControlP5(this);
 
   // add the button bar
-  ButtonBar buttonBar = cp5.addButtonBar("handler_buttonBar")
+  ButtonBar buttonBar = cp5.addButtonBar("ButtonBar")
     .setPosition(0, 0)
     .setSize(SKETCH_WIDTH, BUTTON_BAR_HEIGHT)
     .addItems(buttonBarLabels);
+
+  //add the exit button
+  Button exitButton = cp5.addButton("Exit")
+    .setSize(100, 50)
+    .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50);
 
   // load all test images (assumes they are named 1.png, 2.png, etc.)
   images = new PImage[buttonBarLabels.length];
@@ -59,6 +64,16 @@ void draw() {
 }
 
 // button bar handler to update the current activeImage index.
-void handler_buttonBar(int buttonValue) {
+void ButtonBar(int buttonValue) {
   activeImage = buttonValue;
+}
+
+// exit button handler terminates the sketch
+void Exit(){
+  String title = "Confirm Exit";
+  String message = "Are you sure you want to exit this test?";
+  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  if(reply == JOptionPane.YES_OPTION){
+    exit();
+  }
 }
