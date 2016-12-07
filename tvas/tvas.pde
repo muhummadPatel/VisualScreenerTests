@@ -6,6 +6,7 @@ ControlP5 cp5;
 String[] buttonBarLabels = {
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 };
+PImage[] images;
 
 void setup() {
   size(900, 650);
@@ -19,6 +20,11 @@ void setup() {
 
   List<HashMap> buttonBarItems = buttonBar.getItems();
   buttonBarItems.get(0).put("selected", true);
+
+  images = new PImage[buttonBarLabels.length];
+  for(int i = 0; i < images.length; i++){
+    images[i] = loadImage((i + 1) + ".png");
+  }
 }
 
 void draw() {
