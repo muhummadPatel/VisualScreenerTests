@@ -2,15 +2,21 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import controlP5.*;
 
+
+final int SKETCH_WIDTH = 900;
+final int SKETCH_HEIGHT = 650;
+
 ControlP5 cp5;
 String[] buttonBarLabels = {
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 };
 PImage[] images;
 
-void setup() {
-  size(900, 650);
+void settings(){
+  size(SKETCH_WIDTH, SKETCH_HEIGHT);
+}
 
+void setup() {
   cp5 = new ControlP5(this);
 
   ButtonBar buttonBar = cp5.addButtonBar("handler_buttonBar")
