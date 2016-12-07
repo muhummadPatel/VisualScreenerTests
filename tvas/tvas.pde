@@ -10,6 +10,8 @@ ControlP5 cp5;
 String[] buttonBarLabels = {
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 };
+final int BUTTON_BAR_HEIGHT = 50;
+
 PImage[] images;
 
 void settings(){
@@ -21,7 +23,7 @@ void setup() {
 
   ButtonBar buttonBar = cp5.addButtonBar("handler_buttonBar")
     .setPosition(0, 0)
-    .setSize(900, 40)
+    .setSize(SKETCH_WIDTH, BUTTON_BAR_HEIGHT)
     .addItems(buttonBarLabels);
 
   List<HashMap> buttonBarItems = buttonBar.getItems();
