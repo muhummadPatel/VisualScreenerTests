@@ -1,24 +1,30 @@
+import java.util.*;
 import javax.swing.JOptionPane;
+import controlP5.*;
 
-int HORIZONTAL_SCREEN_RESOLUTION;
-int SCREEN_WIDTH;  // width in mm of the physical screen
+ControlP5 cp5;
+String[] buttonBarLabels = {
+  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
+};
 
 void setup() {
   size(900, 650);
 
-  HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
-  SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
-}
+  cp5 = new ControlP5(this);
 
-float cmToPx(float cm){
-  // divide by displayDensity to account for high-dpi displays (retina, etc.)
-  return (cm * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity();
+  ButtonBar buttonBar = cp5.addButtonBar("handler_buttonBar")
+    .setPosition(0, 0)
+    .setSize(900, 40)
+    .addItems(buttonBarLabels);
+
+  List<HashMap> buttonBarItems = buttonBar.getItems();
+  buttonBarItems.get(0).put("selected", true);
 }
 
 void draw() {
   background(125);
+}
 
-  float a = cmToPx(1);
-  float b = cmToPx(5);
-  rect(a, a, b, b);
+void handler_buttonBar(int buttonIndex) {
+  println("bar clicked, item-value:", buttonBarLabels[buttonIndex]);
 }
