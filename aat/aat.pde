@@ -3,7 +3,11 @@ import javax.swing.JOptionPane;
 int HORIZONTAL_SCREEN_RESOLUTION;
 int SCREEN_WIDTH;  // width in mm of the physical screen
 
-PImage img;
+PImage originalImg;
+PImage scaledImg;
+float lastScale = 0;
+final float SCALE_DELAY = 25;
+float scaleFactor = 0.999;
 
 void setup() {
   size(900, 650);
@@ -11,25 +15,44 @@ void setup() {
   HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
   SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
 
-  img = loadImage("testImage.png");
-  fitImage(img, _mm(100), _mm(80));
+  originalImg = loadImage("testImage.png");
+  originalImg = fitImage(originalImg, _mm(150), _mm(90));
+  scaledImg = originalImg.get();
 }
 
 void draw() {
   background(125);
 
-  // rect(_mm(10), _mm(10), _mm(100), _mm(50));
-  image(img, 0, 0);
+  if(millis() - lastScale > SCALE_DELAY){
+    try{
+      scaledImg = fitImage(originalImg, (int)(scaleFactor * scaledImg.width), scaledImg.height);
+      lastScale = millis();
+    }catch(IllegalArgumentException e){
+      // TODO: Ask the user to retake the test maybe? or automatically restart it
+      String message = "You did not press a key. Test will now be restarted.";
+      String title = "Incomplete Test";
+      JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+      scaledImg = originalImg.get();
+    }
+  }
+
+  float imgX = (width - scaledImg.width) / 2;
+  float imgY = (height - scaledImg.height) / 2;
+  image(scaledImg, imgX, imgY);
 }
 
 int _mm(float mm){
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
-  return (int)((0.1 * mm) * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity();
+  return (int)(((0.1 * mm) * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity());
 }
 
-void fitImage(PImage image, int maxWidth, int maxHeight){
-  image.resize(maxWidth, 0);
-  if(image.height > maxHeight){
-    image.resize(0, maxHeight);
+PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentException{
+  PImage temp = img.get();
+
+  temp.resize(maxWidth, 0);
+  if(temp.height > maxHeight){
+    temp.resize(0, maxHeight);
   }
+
+  return temp;
 }
