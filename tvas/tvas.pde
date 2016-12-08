@@ -29,15 +29,16 @@ void setup() {
   cp5 = new ControlP5(this);
 
   // add the button bar
-  ButtonBar buttonBar = cp5.addButtonBar("ButtonBar")
+  ButtonBar buttonBar = cp5.addButtonBar("handler_buttonBar")
     .setPosition(0, 0)
     .setSize(SKETCH_WIDTH, BUTTON_BAR_HEIGHT)
     .addItems(buttonBarLabels);
 
   //add the exit button
-  Button exitButton = cp5.addButton("Exit")
+  Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
-    .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50);
+    .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50)
+    .setCaptionLabel("Exit");
 
   // load all test images (assumes they are named 1.png, 2.png, etc.)
   images = new PImage[buttonBarLabels.length];
@@ -64,12 +65,12 @@ void draw() {
 }
 
 // button bar handler to update the current activeImage index.
-void ButtonBar(int buttonValue) {
+void handler_buttonBar(int buttonValue) {
   activeImage = buttonValue;
 }
 
 // exit button handler terminates the sketch
-void Exit(){
+void handler_exitBtn(){
   String title = "Confirm Exit";
   String message = "Are you sure you want to exit this test?";
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
