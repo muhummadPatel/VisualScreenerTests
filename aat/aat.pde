@@ -6,6 +6,8 @@ int HORIZONTAL_SCREEN_RESOLUTION;
 int SCREEN_WIDTH;  // width in mm of the physical screen
 
 ControlP5 cp5;
+Button startButton;
+Button exitButton;
 
 PImage originalImg;
 PImage scaledImg;
@@ -21,12 +23,12 @@ void setup() {
 
   cp5 = new ControlP5(this);
 
-  Button startButton = cp5.addButton("handler_startBtn")
+  startButton = cp5.addButton("handler_startBtn")
     .setSize(100, 50)
     .setPosition(0, 0)
     .setCaptionLabel("Start Test");
 
-  Button exitButton = cp5.addButton("handler_exitBtn")
+  exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
     .setCaptionLabel("Exit");
