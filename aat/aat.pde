@@ -8,6 +8,7 @@ int SCREEN_WIDTH;  // width in mm of the physical screen
 ControlP5 cp5;
 Button startButton;
 Button exitButton;
+Textlabel instructionLabel;
 
 PImage originalImg;
 PImage scaledImg;
@@ -29,6 +30,11 @@ void setup() {
     .setSize(100, 50)
     .setPosition(0, 0)
     .setCaptionLabel("Start Test");
+
+  instructionLabel = cp5.addTextlabel("instructionLabel")
+    .setPosition(125, 12.5)
+    .setText("Press the spacebar when the image goes out of focus")
+    .setFont(createFont("", 20));
 
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
