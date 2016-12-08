@@ -13,7 +13,7 @@ Textlabel instructionLabel;
 PImage originalImg;
 PImage scaledImg;
 float lastScale = 0;
-final float SCALE_DELAY = 25;
+final float SCALE_DELAY = 5;
 float scaleFactor = 0.999;
 
 boolean testRunning;
