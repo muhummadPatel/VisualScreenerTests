@@ -5,19 +5,22 @@ import controlP5.*;
 int HORIZONTAL_SCREEN_RESOLUTION;
 int SCREEN_WIDTH;  // width in mm of the physical screen
 
+// GUI components
 ControlP5 cp5;
 Button startButton;
 Button exitButton;
 Textlabel instructionLabel;
 
+// Image and image scaling related vars
 PImage originalImg;
 PImage scaledImg;
-float lastScale = 0;
-final float SCALE_DELAY = 5;
-float scaleFactor = 0.999;
+float lastScale = 0;  // Last time (in ms) when the image was scaled
+final float SCALE_DELAY = 5;  // how often (in ms) to scale down the image
+float scaleFactor = 0.999;  // factor by which to scale down the image at each step
 
-boolean testRunning;
-boolean testCompleted;
+// test state logic vars
+boolean testRunning = false;
+boolean testCompleted = false;
 
 void setup() {
   size(900, 650);
@@ -33,6 +36,7 @@ void setup() {
     System.exit(0);
   }
 
+  // Set up the buttons and labels
   cp5 = new ControlP5(this);
 
   startButton = cp5.addButton("handler_startBtn")
@@ -50,6 +54,7 @@ void setup() {
     .setPosition(width - 100, height - 50)
     .setCaptionLabel("Exit");
 
+  // load the image and fit it to a predefined maximum dimension in mm
   originalImg = loadImage("testImage.png");
   originalImg = fitImage(originalImg, _mm(150), _mm(90));
 
@@ -61,13 +66,14 @@ void draw() {
 
   if(testRunning){
     if(millis() - lastScale > SCALE_DELAY){
+      // scale down the image after every SCALE_DELAY if the test is running
       try{
         scaledImg = fitImage(originalImg, (int)(scaleFactor * scaledImg.width), scaledImg.height);
         lastScale = millis();
       }catch(IllegalArgumentException e){
         // If we are in here, it means the image is no longer visible (cannot be
         // resized any smaller) and the user still has not clicked a button to
-        // stop the test.
+        // stop the test. So reset the test and ask them to retake it.
         String message = "You did not press a key. Please retake the test.";
         String title = "Incomplete Test";
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
@@ -77,26 +83,32 @@ void draw() {
     }
   }
 
+  // display the scaled image in the centre of the window.
   float imgX = (width - scaledImg.width) / 2;
   float imgY = (height - scaledImg.height) / 2;
   image(scaledImg, imgX, imgY);
 }
 
+// sets the scaled image to the original image and resets all state vars.
 void initTest(){
   scaledImg = originalImg.get();
   testRunning = false;
   testCompleted = false;
 }
 
+// convert from a dimension in mm to screen pixels (based on callibration step)
 int _mm(float mm){
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
   return round(((0.1 * mm) * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity());
 }
 
+// convert from a dimension in screen pixels to a dimension in mm. (based on callibration step)
 int pxToMm(float px){
   return round(((px * displayDensity() * (0.1 * SCREEN_WIDTH)) / HORIZONTAL_SCREEN_RESOLUTION) * 10);
 }
 
+// Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
+// Preserves aspect ratio to avoid image distortion.
 PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentException{
   PImage temp = img.get();
 
@@ -108,8 +120,8 @@ PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentE
   return temp;
 }
 
+// start button handler to start the test
 void handler_startBtn(){
-  System.out.println("DONE");
   testRunning = true;
 }
 
@@ -123,6 +135,7 @@ void handler_exitBtn(){
   }
 }
 
+// keyPress handler to stop the test and exit when the enter key is pressed
 void keyPressed(){
   if(testRunning && (key == ENTER || key == RETURN)){
     testRunning = false;
@@ -131,6 +144,8 @@ void keyPressed(){
   }
 }
 
+// exit handler called before the sketch closed. Prints out the report to
+// report.txt. It prints the result if the test was completed or INC otherwise.
 void dispose(){
   String[] report = new String[1];
   if(testCompleted){
