@@ -22,8 +22,16 @@ boolean testCompleted;
 void setup() {
   size(900, 650);
 
-  HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
-  SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
+  // Callibration step so that we can display things using real mm dimensions
+  try{
+    HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
+    SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
+  }catch(NumberFormatException e){
+    String message = "The value you entered was invalid. Please rerun the test.";
+    String title = "Invalid Input";
+    JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+    System.exit(0);
+  }
 
   cp5 = new ControlP5(this);
 
