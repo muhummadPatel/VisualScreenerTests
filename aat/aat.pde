@@ -17,6 +17,7 @@ final float SCALE_DELAY = 25;
 float scaleFactor = 0.999;
 
 boolean testRunning;
+boolean testCompleted;
 
 void setup() {
   size(900, 650);
@@ -33,7 +34,7 @@ void setup() {
 
   instructionLabel = cp5.addTextlabel("instructionLabel")
     .setPosition(125, 12.5)
-    .setText("Press the spacebar when the image goes out of focus")
+    .setText("Press enter when the image goes out of focus")
     .setFont(createFont("", 20));
 
   exitButton = cp5.addButton("handler_exitBtn")
@@ -59,7 +60,6 @@ void draw() {
         // If we are in here, it means the image is no longer visible (cannot be
         // resized any smaller) and the user still has not clicked a button to
         // stop the test.
-        // TODO: Ask the user to retake the test maybe? or automatically restart it
         String message = "You did not press a key. Please retake the test.";
         String title = "Incomplete Test";
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
@@ -77,12 +77,16 @@ void draw() {
 void initTest(){
   scaledImg = originalImg.get();
   testRunning = false;
-  startButton.setCaptionLabel("Start Test");
+  testCompleted = false;
 }
 
 int _mm(float mm){
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
-  return (int)(((0.1 * mm) * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity());
+  return round(((0.1 * mm) * HORIZONTAL_SCREEN_RESOLUTION / (0.1 * SCREEN_WIDTH)) / displayDensity());
+}
+
+int pxToMm(float px){
+  return round(((px * displayDensity() * (0.1 * SCREEN_WIDTH)) / HORIZONTAL_SCREEN_RESOLUTION) * 10);
 }
 
 PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentException{
@@ -104,9 +108,34 @@ void handler_startBtn(){
 // exit button handler terminates the sketch
 void handler_exitBtn(){
   String title = "Confirm Exit";
-  String message = "Are you sure you want to exit this test?";
+  String message = "Are you sure you want to exit this test? (record will be incomplete)";
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
   }
+}
+
+void keyPressed(){
+  if(testRunning && (key == ENTER || key == RETURN)){
+    testRunning = false;
+    testCompleted = true;
+    exit();
+  }
+}
+
+void dispose(){
+  String[] report = new String[1];
+  if(testCompleted){
+    int originalWidth = pxToMm(originalImg.width);
+    int finalWidth = pxToMm(scaledImg.width);
+    report[0] = originalWidth + "/" + finalWidth;
+
+    String message = "Thank you, your results have been recorded.";
+    String title = "Test Complete";
+    JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+  }else{
+    report[0] = "INC";
+  }
+
+  saveStrings("report.txt", report);
 }
