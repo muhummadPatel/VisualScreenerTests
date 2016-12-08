@@ -16,7 +16,7 @@ float lastScale = 0;
 final float SCALE_DELAY = 25;
 float scaleFactor = 0.999;
 
-boolean testStarted;
+boolean testRunning;
 
 void setup() {
   size(900, 650);
@@ -50,7 +50,7 @@ void setup() {
 void draw() {
   background(125);
 
-  if(testStarted){
+  if(testRunning){
     if(millis() - lastScale > SCALE_DELAY){
       try{
         scaledImg = fitImage(originalImg, (int)(scaleFactor * scaledImg.width), scaledImg.height);
@@ -76,7 +76,7 @@ void draw() {
 
 void initTest(){
   scaledImg = originalImg.get();
-  testStarted = false;
+  testRunning = false;
   startButton.setCaptionLabel("Start Test");
 }
 
@@ -98,7 +98,7 @@ PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentE
 
 void handler_startBtn(){
   System.out.println("DONE");
-  testStarted = true;
+  testRunning = true;
 }
 
 // exit button handler terminates the sketch
