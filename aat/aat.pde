@@ -15,6 +15,8 @@ float lastScale = 0;
 final float SCALE_DELAY = 25;
 float scaleFactor = 0.999;
 
+boolean testStarted;
+
 void setup() {
   size(900, 650);
 
@@ -35,31 +37,41 @@ void setup() {
 
   originalImg = loadImage("testImage.png");
   originalImg = fitImage(originalImg, _mm(150), _mm(90));
-  scaledImg = originalImg.get();
+
+  initTest();
 }
 
 void draw() {
   background(125);
 
-  if(millis() - lastScale > SCALE_DELAY){
-    try{
-      scaledImg = fitImage(originalImg, (int)(scaleFactor * scaledImg.width), scaledImg.height);
-      lastScale = millis();
-    }catch(IllegalArgumentException e){
-      // If we are in here, it means the image is no longer visible (cannot be
-      // resized any smaller) and the user still has not clicked a button to
-      // stop the test.
-      // TODO: Ask the user to retake the test maybe? or automatically restart it
-      String message = "You did not press a key. Test will now be restarted.";
-      String title = "Incomplete Test";
-      JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
-      scaledImg = originalImg.get();
+  if(testStarted){
+    if(millis() - lastScale > SCALE_DELAY){
+      try{
+        scaledImg = fitImage(originalImg, (int)(scaleFactor * scaledImg.width), scaledImg.height);
+        lastScale = millis();
+      }catch(IllegalArgumentException e){
+        // If we are in here, it means the image is no longer visible (cannot be
+        // resized any smaller) and the user still has not clicked a button to
+        // stop the test.
+        // TODO: Ask the user to retake the test maybe? or automatically restart it
+        String message = "You did not press a key. Please retake the test.";
+        String title = "Incomplete Test";
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+
+        initTest();
+      }
     }
   }
 
   float imgX = (width - scaledImg.width) / 2;
   float imgY = (height - scaledImg.height) / 2;
   image(scaledImg, imgX, imgY);
+}
+
+void initTest(){
+  scaledImg = originalImg.get();
+  testStarted = false;
+  startButton.setCaptionLabel("Start Test");
 }
 
 int _mm(float mm){
@@ -80,6 +92,7 @@ PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentE
 
 void handler_startBtn(){
   System.out.println("DONE");
+  testStarted = true;
 }
 
 // exit button handler terminates the sketch
