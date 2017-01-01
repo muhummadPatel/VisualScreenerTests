@@ -13,6 +13,7 @@ String[] buttonBarLabels = {
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 };
 final int BUTTON_BAR_HEIGHT = 50;
+List<HashMap> buttonBarItems;
 
 // Test images
 PImage[] images;
@@ -34,6 +35,17 @@ void setup() {
     .setSize(SKETCH_WIDTH, BUTTON_BAR_HEIGHT)
     .addItems(buttonBarLabels);
 
+  // add the next and prev buttons
+  Button prevButton = cp5.addButton("handler_prevBtn")
+    .setSize(100, 50)
+    .setPosition(0, BUTTON_BAR_HEIGHT)
+    .setCaptionLabel("Previous");
+
+  Button nextButton = cp5.addButton("handler_nextBtn")
+    .setSize(100, 50)
+    .setPosition(SKETCH_WIDTH - 100, BUTTON_BAR_HEIGHT)
+    .setCaptionLabel("Next");
+
   //add the exit button
   Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
@@ -54,7 +66,7 @@ void setup() {
   // set the current activeImage to 0th image and set the 0th button in the
   // button bar to be selected.
   activeImage = 0;
-  List<HashMap> buttonBarItems = buttonBar.getItems();
+  buttonBarItems = buttonBar.getItems();
   buttonBarItems.get(activeImage).put("selected", true);
 }
 
@@ -67,6 +79,24 @@ void draw() {
 // button bar handler to update the current activeImage index.
 void handler_buttonBar(int buttonValue) {
   activeImage = buttonValue;
+}
+
+// button handler for the 'previous' button.
+void handler_prevBtn(){
+  if(activeImage > 0){
+    buttonBarItems.get(activeImage).put("selected", false);
+    activeImage--;
+    buttonBarItems.get(activeImage).put("selected", true);
+  }
+}
+
+// button handler for the 'next' button.
+void handler_nextBtn(){
+  if(activeImage < buttonBarItems.size() - 1){
+    buttonBarItems.get(activeImage).put("selected", false);
+    activeImage++;
+    buttonBarItems.get(activeImage).put("selected", true);
+  }
 }
 
 // exit button handler terminates the sketch
