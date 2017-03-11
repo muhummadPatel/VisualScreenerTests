@@ -7,6 +7,8 @@ int SCREEN_WIDTH;  // width in mm of the physical screen
 
 // GUI components
 ControlP5 cp5;
+Button nextButton;
+Button prevButton;
 Button exitButton;
 
 // Test images
@@ -30,6 +32,16 @@ void setup() {
 
   // Set up the buttons and labels
   cp5 = new ControlP5(this);
+
+  nextButton = cp5.addButton("handler_nextBtn")
+    .setSize(100, 50)
+    .setPosition(width - 100, 0)
+    .setCaptionLabel("Next");
+
+  prevButton = cp5.addButton("handler_prevBtn")
+    .setSize(100, 50)
+    .setPosition(0, 0)
+    .setCaptionLabel("Previous");
 
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
@@ -59,22 +71,22 @@ int pxToMm(float px){
   return round(((px * displayDensity() * (0.1 * SCREEN_WIDTH)) / HORIZONTAL_SCREEN_RESOLUTION) * 10);
 }
 
-// Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
-// Preserves aspect ratio to avoid image distortion.
-PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentException{
-  PImage temp = img.get();
+// next button handler to move to the next line image
+void handler_nextBtn(){
+  activeImage++;
 
-  temp.resize(maxWidth, 0);
-  if(temp.height > maxHeight){
-    temp.resize(0, maxHeight);
+  if(activeImage > (images.length-1)){
+    activeImage = 0;
   }
-
-  return temp;
 }
 
-// start button handler to start the test
-void handler_startBtn(){
-  // TODO
+// prev button handler to move to the previous line image
+void handler_prevBtn(){
+  activeImage--;
+
+  if(activeImage < 0){
+    activeImage = images.length - 1;
+  }
 }
 
 // exit button handler terminates the sketch
