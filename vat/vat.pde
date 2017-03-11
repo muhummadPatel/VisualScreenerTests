@@ -9,6 +9,11 @@ int SCREEN_WIDTH;  // width in mm of the physical screen
 ControlP5 cp5;
 Button exitButton;
 
+// Test images
+PImage[] images;
+float[] lineHeights = { 40, 20, 14, 10, 8, 6, 5, 4 };
+int activeImage;
+
 void setup() {
   size(900, 650);
 
@@ -30,6 +35,8 @@ void setup() {
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
     .setCaptionLabel("Exit");
+
+  loadAndScaleImages();
 }
 
 void draw() {
@@ -74,5 +81,19 @@ void handler_exitBtn(){
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
+  }
+}
+
+void loadAndScaleImages(){
+  // assumes images are named 1.png, 2.png, etc.
+  // load images
+  images = new PImage[lineHeights.length];
+  for(int i = 0; i < images.length; i++){
+    images[i] = loadImage((i + 1) + ".png");
+  }
+
+  // scale images to actual size
+  for(int i = 0; i < images.length; i++){
+    images[i].resize(0, _mm(lineHeights[i]));
   }
 }
