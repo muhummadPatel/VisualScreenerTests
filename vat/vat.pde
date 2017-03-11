@@ -40,7 +40,7 @@ void setup() {
 }
 
 void draw() {
-  background(125);
+  background(255);
 
   ellipse(width/2, height/2, 50, 50);
 }
