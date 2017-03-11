@@ -37,12 +37,15 @@ void setup() {
     .setCaptionLabel("Exit");
 
   loadAndScaleImages();
+  activeImage = 0;
 }
 
 void draw() {
   background(255);
 
-  ellipse(width/2, height/2, 50, 50);
+  float imgX = (width - images[activeImage].width) / 2;
+  float imgY = (height - images[activeImage].height) / 2;
+  image(images[activeImage], imgX, imgY);
 }
 
 // convert from a dimension in mm to screen pixels (based on callibration step)
