@@ -12,10 +12,12 @@ boolean testRunning = false;
 boolean testCompleted = false;
 
 // Dot related vars
-int spacing = 80; //spacing from centre
-int radius = 40;
+int spacing = 90; //spacing from centre
+int radius = 55;
 PVector[] positions = new PVector[4];
 color[] colors = new color[4];
+PImage[] images = new PImage[4];
+
 
 void setup() {
   size(900, 650);
@@ -38,18 +40,27 @@ void setup() {
     .setPosition(width - 100, height - 50)
     .setCaptionLabel("Exit");
 
-  // Set up the dots' positioning and colours
-  testRunning = false;
-  PVector center = new PVector(width/2, height/2);
-  positions[0] = new PVector(center.x, center.y - spacing);
-  positions[1] = new PVector(center.x + spacing, center.y);
-  positions[2] = new PVector(center.x, center.y + spacing);
-  positions[3] = new PVector(center.x - spacing, center.y);
-
   colors[0] = color(255, 0, 0);
   colors[1] = color(0, 255, 0);
   colors[2] = color(255, 255, 255);
   colors[3] = color(0, 255, 0);
+
+  images[0] = loadImage("red.png");
+  images[1] = loadImage("green.png");
+  images[2] = loadImage("white.png");
+  images[3] = loadImage("green.png");
+
+  for(int i = 0; i < images.length; i++){
+    images[i].resize(0, radius);
+  }
+
+  // Set up the dots' positioning and colours
+  testRunning = false;
+  PVector center = new PVector(width/2 - images[0].width/2, height/2 - images[0].height/2);
+  positions[0] = new PVector(center.x, center.y - spacing);
+  positions[1] = new PVector(center.x + spacing, center.y);
+  positions[2] = new PVector(center.x, center.y + spacing);
+  positions[3] = new PVector(center.x - spacing, center.y);
 }
 
 void draw() {
@@ -60,7 +71,8 @@ void draw() {
       noStroke();
       fill(colors[i]);
 
-      ellipse(positions[i].x, positions[i].y, radius, radius);
+      // ellipse(positions[i].x, positions[i].y, radius, radius);
+      image(images[i], positions[i].x, positions[i].y);
     }
   }
 }
