@@ -46,7 +46,7 @@ void setup() {
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("Exit");
+    .setCaptionLabel("End Test");
 
   loadAndScaleImages();
   activeImage = 0;

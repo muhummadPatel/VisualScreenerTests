@@ -50,7 +50,7 @@ void setup() {
   Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50)
-    .setCaptionLabel("Exit");
+    .setCaptionLabel("End Test");
 
   // load all test images (assumes they are named 1.png, 2.png, etc.)
   images = new PImage[buttonBarLabels.length];

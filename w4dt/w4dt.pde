@@ -28,17 +28,17 @@ void setup() {
   startButton = cp5.addButton("handler_startBtn")
     .setSize(100, 50)
     .setPosition(0, 0)
-    .setCaptionLabel("Start Test");
+    .setCaptionLabel("Show Test");
 
   startButton = cp5.addButton("handler_stopBtn")
     .setSize(100, 50)
     .setPosition(100, 0)
-    .setCaptionLabel("Stop Test");
+    .setCaptionLabel("Hide Test");
 
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("Exit");
+    .setCaptionLabel("End Test");
 
   colors[0] = color(255, 0, 0);
   colors[1] = color(0, 255, 0);

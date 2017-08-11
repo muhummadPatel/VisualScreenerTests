@@ -29,7 +29,7 @@ void setup() {
   Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50)
-    .setCaptionLabel("Exit");
+    .setCaptionLabel("End Test");
 
   // computing the x and y co-ords of the top corner where the images should
   // be displayed. Tries to center the image in the sketch.
