@@ -2,6 +2,7 @@ import javax.swing.JOptionPane;
 import java.util.*;
 import controlP5.*;
 
+
 // GUI components
 ControlP5 cp5;
 ColorWheel redWheel, greenWheel;
@@ -43,8 +44,8 @@ void setup() {
 
   // load old settings/default settings
   List<String> dataFiles = listFileNames(dataPath(""));
-  if(dataFiles.contains("customSettings.json")) {
-    oldSettings = loadJSONObject("customSettings.json");
+  if(dataFiles.contains("settings.json")) {
+    oldSettings = loadJSONObject("settings.json");
   } else {
     oldSettings = loadJSONObject("defaultSettings.json");
   }
@@ -259,7 +260,7 @@ void handler_saveBtn(){
     newSettings.setInt("horizontal_screen_resolution", horizontalScreenResolution);
     newSettings.setInt("screen_width", screenWidth);
 
-    saveJSONObject(newSettings, "data/customSettings.json");
+    saveJSONObject(newSettings, "data/settings.json");
   }
 }
 
