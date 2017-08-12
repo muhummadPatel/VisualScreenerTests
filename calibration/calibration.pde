@@ -7,7 +7,7 @@ ControlP5 cp5;
 ColorWheel redWheel, greenWheel;
 ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
-Textlabel resolutionCallibrationInfoLabel;
+Textlabel resolutionCalibrationInfoLabel;
 
 // Current settings loaded here
 JSONObject oldSettings;
@@ -25,14 +25,14 @@ static final String TAB_LANGUAGE = "language";
 static final String TAB_RESOLUTION = "resolution";
 static final int COLOUR_WHEEL_R = 300;
 
-List<String> languages = Arrays.asList("English", "isiZulu");
+List<String> languages = Arrays.asList("english", "isizulu");
 
-// To show/not-show verification image for resolution callibration tab.
+// To show/not-show verification image for resolution calibration tab.
 // Need to do this manually as there isn't another way to display non ControlP5
 // elements on only a specific tab unfortunately.
-boolean showResolutionCallibrationImage = false;
-PImage resolutionCallibrationImage;
-PVector resolutionCallibrationImagePos;
+boolean showResolutionCalibrationImage = false;
+PImage resolutionCalibrationImage;
+PVector resolutionCalibrationImagePos;
 
 void setup() {
   size(900, 650);
@@ -142,13 +142,13 @@ void setup() {
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
-  resolutionCallibrationInfoLabel = cp5.addTextlabel("resolutionCallibrationInfoLabel")
+  resolutionCalibrationInfoLabel = cp5.addTextlabel("resolutionCalibrationInfoLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 250)
-    .setText("When properly callibrated, the line below should measure 100mm end-to-end:")
+    .setText("When properly calibrated, the line below should measure 100mm end-to-end:")
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
-  resolutionCallibrationImagePos = new PVector(colourWheelLeftX, 360);
-  resolutionCallibrationImage = loadImage("resolutionCallibrationImage.png");
+  resolutionCalibrationImagePos = new PVector(colourWheelLeftX, 360);
+  resolutionCalibrationImage = loadImage("resolutionCalibrationImage.png");
 
   // global (all tabs) buttons---------------------------
   cp5.addButton("handler_resetToDefault")
@@ -173,9 +173,9 @@ void setup() {
 void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     if (theControlEvent.getTab().getName().equals(TAB_RESOLUTION)) {
-      showResolutionCallibrationImage = true;
+      showResolutionCalibrationImage = true;
     } else {
-      showResolutionCallibrationImage = false;
+      showResolutionCalibrationImage = false;
     }
   }
 }
@@ -187,19 +187,19 @@ void handler_languageDropdown(int n) {
 void draw() {
   background(125);
 
-  if(showResolutionCallibrationImage) {
+  if(showResolutionCalibrationImage) {
     try {
-      resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 100mm end-to-end:");
+      resolutionCalibrationInfoLabel.setText("When properly calibrated, the line below should measure 100mm end-to-end:");
 
-      image(fitImage(resolutionCallibrationImage, _mm(100), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
+      image(fitImage(resolutionCalibrationImage, _mm(100), _mm(90)), resolutionCalibrationImagePos.x, resolutionCalibrationImagePos.y);
     } catch (IllegalArgumentException e) {
       // no-op. Don't display the image when the user is changing the value
-      resolutionCallibrationInfoLabel.setText("Please check the values above");
+      resolutionCalibrationInfoLabel.setText("Please check the values above");
     }
   }
 }
 
-// convert from a dimension in mm to screen pixels (based on callibration step)
+// convert from a dimension in mm to screen pixels (based on calibration step)
 int _mm(float mm){
   // pull these values fresh from the input fields so the user can verify that they work as expected
   horizontalScreenResolution = Integer.parseInt(screenResolutionInputTextField.getText());
@@ -251,7 +251,7 @@ void handler_saveBtn(){
 
     newSettings.setInt("stereoRed", stereoRed);
     newSettings.setInt("stereoGreen", stereoGreen);
-    newSettings.setString("language", language);
+    newSettings.setString("language", language.toLowerCase());
     newSettings.setInt("horizontalScreenResolution", horizontalScreenResolution);
     newSettings.setInt("screenWidth", screenWidth);
 
