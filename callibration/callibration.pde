@@ -152,6 +152,12 @@ void setup() {
   resolutionCallibrationImage = loadImage("resolutionCallibrationImage.png");
 
   // global (all tabs) buttons---------------------------
+  exitButton = cp5.addButton("handler_resetToDefault")
+    .setSize(100, 50)
+    .setPosition(0, height - 50)
+    .setCaptionLabel("Reset to Defaults")
+    .moveTo(TAB_GLOBAL);
+
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
@@ -233,5 +239,22 @@ void handler_exitBtn(){
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
+  }
+}
+
+void handler_resetToDefault(){
+  String title = "Confirm Reset";
+  String message = "This will reset all settings to their default values. Are you sure?";
+  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  if(reply == JOptionPane.YES_OPTION){
+    JSONObject defaultSettings = loadJSONObject("defaultSettings.json");
+
+    redWheel.setRGB(defaultSettings.getInt("stereoRed"));
+    greenWheel.setRGB(defaultSettings.getInt("stereoGreen"));
+
+    languageDropdown.setValue(languages.indexOf(defaultSettings.getString("language"))).open();
+
+    screenResolutionInputTextField.setText("" + defaultSettings.getInt("horizontalScreenResolution"));
+    screenWidthInputTextField.setText("" + defaultSettings.getInt("screenWidth"));
   }
 }
