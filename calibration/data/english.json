@@ -47,5 +47,12 @@
     "button_end_test": "end test",
     "title_confirm_exit": "Confirm Exit",
     "prompt_confirm_exit": "End this test?"
+  },
+  "tvas": {
+    "button_next": "next",
+    "button_previous": "previous",
+    "button_end_test": "end test",
+    "title_confirm_exit": "Confirm Exit",
+    "prompt_confirm_exit": "End this test?"
   }
 }
