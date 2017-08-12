@@ -7,6 +7,10 @@ import controlP5.*;
 final int SKETCH_WIDTH = 900;
 final int SKETCH_HEIGHT = 650;
 
+// settings
+JSONObject settings;
+JSONObject languageRepo;
+
 // GUI related vars
 ControlP5 cp5;
 final int IMAGE_DISPLAY_SIZE = 600;
@@ -21,6 +25,10 @@ void settings(){
 }
 
 void setup() {
+  // load settings
+  settings = loadJSONObject("settings.json");
+  languageRepo = loadJSONObject(settings.getString("language") + ".json").getJSONObject("cvt");
+
   cp5 = new ControlP5(this);
 
   test_image = loadImage("butterfly.png");
@@ -29,7 +37,7 @@ void setup() {
   Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50)
-    .setCaptionLabel("End Test");
+    .setCaptionLabel(i10n("button_end_test"));
 
   // computing the x and y co-ords of the top corner where the images should
   // be displayed. Tries to center the image in the sketch.
@@ -45,10 +53,12 @@ void draw() {
 
 // exit button handler terminates the sketch
 void handler_exitBtn(){
-  String title = "Confirm Exit";
-  String message = "Are you sure you want to end this test?";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_confirm_exit"), i10n("title_confirm_exit"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
   }
+}
+
+String i10n(String strKey) {
+  return languageRepo.getString(strKey, "<unknown prompt: " + strKey + ">");
 }

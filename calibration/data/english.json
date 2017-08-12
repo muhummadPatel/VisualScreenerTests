@@ -41,6 +41,11 @@
     "button_previous": "previous",
     "button_end_test": "end test",
     "title_confirm_exit": "Confirm Exit",
-    "prompt_confirm_exit": "End this test?",
+    "prompt_confirm_exit": "End this test?"
+  },
+  "cvt": {
+    "button_end_test": "end test",
+    "title_confirm_exit": "Confirm Exit",
+    "prompt_confirm_exit": "End this test?"
   }
 }
