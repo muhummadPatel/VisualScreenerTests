@@ -7,6 +7,7 @@ ControlP5 cp5;
 Button exitButton;
 ColorWheel redWheel, greenWheel;
 ScrollableList languageDropdown;
+Textfield screenResolutionInputTextField, screenWidthInputTextField;
 
 int stereoRed;
 int stereoGreen;
@@ -16,6 +17,7 @@ static final int TABS_WIDTH = 150;
 static final String TAB_GLOBAL = "global";
 static final String TAB_COLOUR = "default";
 static final String TAB_LANGUAGE = "language";
+static final String TAB_RESOLUTION = "resolution";
 static final int COLOUR_WHEEL_R = 300;
 
 
@@ -78,6 +80,44 @@ void setup() {
     .setValue(0)
     .open()
     .moveTo(TAB_LANGUAGE);
+
+  // Resolution settings tab---------------------------
+  cp5.getTab(TAB_RESOLUTION)
+    .activateEvent(true)
+    .setLabel("Resolution")
+    .setId(3)
+    .setWidth(TABS_WIDTH)
+    .setHeight(TABS_HEIGHT);
+
+  cp5.addTextlabel("screenResolutionInstructionLabel")
+    .setPosition(colourWheelLeftX, TABS_HEIGHT + 35)
+    .setText("Please enter the horizontal resolution of your screen:")
+    .setFont(createFont("", 20))
+    .moveTo(TAB_RESOLUTION);
+
+  screenResolutionInputTextField = cp5.addTextfield("screenResolutionInputTextField")
+    .setPosition(colourWheelLeftX, TABS_HEIGHT + 75)
+    .setSize(200, 30)
+    .setLabel("")
+    .setFont(createFont("", 14))
+    .setAutoClear(false)
+    .setInputFilter(Textfield.INTEGER)
+    .moveTo(TAB_RESOLUTION);
+
+  cp5.addTextlabel("screenWidthInstructionLabel")
+    .setPosition(colourWheelLeftX, TABS_HEIGHT + 150)
+    .setText("Please enter the physical width of your screen in mm:")
+    .setFont(createFont("", 20))
+    .moveTo(TAB_RESOLUTION);
+
+  screenWidthInputTextField = cp5.addTextfield("screenWidthInputTextField")
+    .setPosition(colourWheelLeftX, TABS_HEIGHT + 190)
+    .setSize(200, 30)
+    .setLabel("")
+    .setFont(createFont("", 14))
+    .setAutoClear(false)
+    .setInputFilter(Textfield.INTEGER)
+    .moveTo(TAB_RESOLUTION);
 
   // global (all tabs) buttons---------------------------
   exitButton = cp5.addButton("handler_exitBtn")
