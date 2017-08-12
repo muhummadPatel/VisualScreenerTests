@@ -4,7 +4,6 @@ import controlP5.*;
 
 // GUI components
 ControlP5 cp5;
-Button exitButton;
 ColorWheel redWheel, greenWheel;
 ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
@@ -152,16 +151,22 @@ void setup() {
   resolutionCallibrationImage = loadImage("resolutionCallibrationImage.png");
 
   // global (all tabs) buttons---------------------------
-  exitButton = cp5.addButton("handler_resetToDefault")
+  cp5.addButton("handler_resetToDefault")
     .setSize(100, 50)
     .setPosition(0, height - 50)
     .setCaptionLabel("Reset to Defaults")
     .moveTo(TAB_GLOBAL);
 
-  exitButton = cp5.addButton("handler_exitBtn")
+  cp5.addButton("handler_saveBtn")
+    .setSize(100, 50)
+    .setPosition(width - 220, height - 50)
+    .setCaptionLabel("Save Settings")
+    .moveTo(TAB_GLOBAL);
+
+  cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("Done")
+    .setCaptionLabel("Exit")
     .moveTo(TAB_GLOBAL);
 }
 
@@ -197,15 +202,15 @@ void draw() {
 // convert from a dimension in mm to screen pixels (based on callibration step)
 int _mm(float mm){
   // pull these values fresh from the input fields so the user can verify that they work as expected
-  int horizontalScreenResolution_input = Integer.parseInt(screenResolutionInputTextField.getText());
-  int screenWidth_input = Integer.parseInt(screenWidthInputTextField.getText());
+  horizontalScreenResolution = Integer.parseInt(screenResolutionInputTextField.getText());
+  screenWidth = Integer.parseInt(screenWidthInputTextField.getText());
 
-  if (horizontalScreenResolution_input < 150 || screenWidth_input < 100) {
+  if (horizontalScreenResolution < 150 || screenWidth < 100) {
     throw new IllegalArgumentException("Screen dimensions too low. Can't resize!");
   }
 
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
-  return round(((0.1 * mm) * horizontalScreenResolution_input / (0.1 * screenWidth_input)) / displayDensity());
+  return round(((0.1 * mm) * horizontalScreenResolution / (0.1 * screenWidth)) / displayDensity());
 }
 
 // Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
@@ -234,11 +239,23 @@ List<String> listFileNames(String dir) {
 
 // exit button handler terminates the sketch
 void handler_exitBtn(){
-  String title = "Confirm Exit";
-  String message = "Are you sure?";
+  exit();
+}
+
+void handler_saveBtn(){
+  String title = "Save changes";
+  String message = "Do you wnat to save your changes?";
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
-    exit();
+    JSONObject newSettings = new JSONObject();
+
+    newSettings.setInt("stereoRed", stereoRed);
+    newSettings.setInt("stereoGreen", stereoGreen);
+    newSettings.setString("language", language);
+    newSettings.setInt("horizontalScreenResolution", horizontalScreenResolution);
+    newSettings.setInt("screenWidth", screenWidth);
+
+    saveJSONObject(newSettings, "data/customSettings.json");
   }
 }
 
