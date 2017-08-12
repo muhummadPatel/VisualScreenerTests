@@ -5,7 +5,6 @@ import controlP5.*;
 ControlP5 cp5;
 Button startButton;
 Button exitButton;
-Textlabel instructionLabel;
 
 // test state logic vars
 boolean testRunning = false;
