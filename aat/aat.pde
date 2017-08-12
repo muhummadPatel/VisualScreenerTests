@@ -36,7 +36,7 @@ void setup() {
   HORIZONTAL_SCREEN_RESOLUTION = settings.getInt("horizontal_screen_resolution", -1);
   SCREEN_WIDTH = settings.getInt("screen_width", -1);
 
-  if(HORIZONTAL_SCREEN_RESOLUTION < 0 || SCREEN_WIDTH < 0) {
+  if(HORIZONTAL_SCREEN_RESOLUTION <= 0 || SCREEN_WIDTH <= 0) {
     JOptionPane.showMessageDialog(null, i10n("message_missing_calibration_data"), i10n("title_missing_calibration_data"), JOptionPane.ERROR_MESSAGE);
     System.exit(0);
   }

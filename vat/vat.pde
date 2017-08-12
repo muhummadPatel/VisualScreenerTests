@@ -5,6 +5,10 @@ import controlP5.*;
 int HORIZONTAL_SCREEN_RESOLUTION;
 int SCREEN_WIDTH;  // width in mm of the physical screen
 
+// settings
+JSONObject settings;
+JSONObject languageRepo;
+
 // GUI components
 ControlP5 cp5;
 Button nextButton;
@@ -19,14 +23,16 @@ int activeImage;
 void setup() {
   size(900, 650);
 
+  // load settings
+  settings = loadJSONObject("settings.json");
+  languageRepo = loadJSONObject(settings.getString("language") + ".json").getJSONObject("vat");
+
   // Callibration step so that we can display things using real mm dimensions
-  try{
-    HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
-    SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
-  }catch(NumberFormatException e){
-    String message = "The value you entered was invalid. Please rerun the test.";
-    String title = "Invalid Input";
-    JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+  HORIZONTAL_SCREEN_RESOLUTION = settings.getInt("horizontal_screen_resolution", -1);
+  SCREEN_WIDTH = settings.getInt("screen_width", -1);
+
+  if(HORIZONTAL_SCREEN_RESOLUTION <= 0 || SCREEN_WIDTH <= 0) {
+    JOptionPane.showMessageDialog(null, i10n("message_missing_calibration_data"), i10n("title_missing_calibration_data"), JOptionPane.ERROR_MESSAGE);
     System.exit(0);
   }
 
@@ -36,17 +42,17 @@ void setup() {
   nextButton = cp5.addButton("handler_nextBtn")
     .setSize(100, 50)
     .setPosition(width - 100, 0)
-    .setCaptionLabel("Next");
+    .setCaptionLabel(i10n("button_next"));
 
   prevButton = cp5.addButton("handler_prevBtn")
     .setSize(100, 50)
     .setPosition(0, 0)
-    .setCaptionLabel("Previous");
+    .setCaptionLabel(i10n("button_previous"));
 
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("End Test");
+    .setCaptionLabel(i10n("button_end_test"));
 
   loadAndScaleImages();
   activeImage = 0;
@@ -91,9 +97,7 @@ void handler_prevBtn(){
 
 // exit button handler terminates the sketch
 void handler_exitBtn(){
-  String title = "Confirm Exit";
-  String message = "Are you sure you want to end this test?";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_confirm_exit"), i10n("title_confirm_exit"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
   }
@@ -111,4 +115,8 @@ void loadAndScaleImages(){
   for(int i = 0; i < images.length; i++){
     images[i].resize(0, _mm(lineHeights[i]));
   }
+}
+
+String i10n(String strKey) {
+  return languageRepo.getString(strKey, "<unknown prompt: " + strKey + ">");
 }
