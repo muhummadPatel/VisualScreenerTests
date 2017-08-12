@@ -10,6 +10,10 @@ ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
 Textlabel resolutionCallibrationInfoLabel;
 
+// Current settings loaded here
+JSONObject oldSettings;
+
+// vars to store the new setting values
 int stereoRed, stereoGreen;
 String language;
 int horizontalScreenResolution, screenWidth;
@@ -22,6 +26,8 @@ static final String TAB_LANGUAGE = "language";
 static final String TAB_RESOLUTION = "resolution";
 static final int COLOUR_WHEEL_R = 300;
 
+List<String> languages = Arrays.asList("English", "isiZulu");
+
 // To show/not-show verification image for resolution callibration tab.
 // Need to do this manually as there isn't another way to display non ControlP5
 // elements on only a specific tab unfortunately.
@@ -32,6 +38,14 @@ PVector resolutionCallibrationImagePos;
 void setup() {
   size(900, 650);
   PVector center = new PVector(width/2, height/2);
+
+  // load old settings/default settings
+  List<String> dataFiles = listFileNames(dataPath(""));
+  if(dataFiles.contains("customSettings.json")) {
+    oldSettings = loadJSONObject("customSettings.json");
+  } else {
+    oldSettings = loadJSONObject("defaultSettings.json");
+  }
 
   // Set up the buttons and labels
   cp5 = new ControlP5(this);
@@ -57,12 +71,12 @@ void setup() {
     .moveTo(TAB_COLOUR);
 
   redWheel = cp5.addColorWheel("stereoRed", colourWheelLeftX, colourWheelYpos, COLOUR_WHEEL_R)
-    .setRGB(color(255, 0, 0))
+    .setRGB(oldSettings.getInt("stereoRed"))
     .setLabel("stereo red")
     .moveTo(TAB_COLOUR);
 
   greenWheel = cp5.addColorWheel("stereoGreen", colourWheelRightX, colourWheelYpos, COLOUR_WHEEL_R)
-    .setRGB(color(0, 255, 0))
+    .setRGB(oldSettings.getInt("stereoGreen"))
     .setLabel("stereo green")
     .moveTo(TAB_COLOUR);
 
@@ -80,12 +94,12 @@ void setup() {
     .setFont(createFont("", 20))
     .moveTo(TAB_LANGUAGE);
 
-  languageDropdown = cp5.addScrollableList("languageDropdown")
+  languageDropdown = cp5.addScrollableList("handler_languageDropdown")
     .setBarHeight(30)
     .setItemHeight(25)
     .setPosition((int)center.x - 75, TABS_HEIGHT + 125)
-    .addItems(Arrays.asList("English", "isiZulu"))
-    .setValue(0)
+    .addItems(languages)
+    .setValue(languages.indexOf(oldSettings.getString("language")))
     .open()
     .moveTo(TAB_LANGUAGE);
 
@@ -109,7 +123,7 @@ void setup() {
     .setLabel("")
     .setFont(createFont("", 14))
     .setAutoClear(true)
-    .setText("1080")
+    .setText("" + oldSettings.getInt("horizontalScreenResolution"))
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
@@ -125,17 +139,13 @@ void setup() {
     .setLabel("")
     .setFont(createFont("", 14))
     .setAutoClear(true)
-    .setText("330")
+    .setText("" + oldSettings.getInt("screenWidth"))
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
   resolutionCallibrationInfoLabel = cp5.addTextlabel("resolutionCallibrationInfoLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 250)
-<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
-    .setText("When properly callibrated, the line below should measure 150mm end-to-end:")
-=======
     .setText("When properly callibrated, the line below should measure 100mm end-to-end:")
->>>>>>> Add resolution callibration verification image
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
   resolutionCallibrationImagePos = new PVector(colourWheelLeftX, 360);
@@ -159,20 +169,18 @@ void controlEvent(ControlEvent theControlEvent) {
   }
 }
 
+void handler_languageDropdown(int n) {
+  language = languages.get(n);
+}
+
 void draw() {
   background(125);
 
   if(showResolutionCallibrationImage) {
     try {
-<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
-      resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 150mm end-to-end:");
-
-      image(fitImage(resolutionCallibrationImage, _mm(150), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
-=======
       resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 100mm end-to-end:");
 
       image(fitImage(resolutionCallibrationImage, _mm(100), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
->>>>>>> Add resolution callibration verification image
     } catch (IllegalArgumentException e) {
       // no-op. Don't display the image when the user is changing the value
       resolutionCallibrationInfoLabel.setText("Please check the values above");
@@ -183,26 +191,15 @@ void draw() {
 // convert from a dimension in mm to screen pixels (based on callibration step)
 int _mm(float mm){
   // pull these values fresh from the input fields so the user can verify that they work as expected
-<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
-  int horizontalScreenResolution = Integer.parseInt(screenResolutionInputTextField.getText());
-  int screenWidth = Integer.parseInt(screenWidthInputTextField.getText());
-
-  if (horizontalScreenResolution < 150 || screenWidth < 100) {
-=======
   int horizontalScreenResolution_input = Integer.parseInt(screenResolutionInputTextField.getText());
   int screenWidth_input = Integer.parseInt(screenWidthInputTextField.getText());
 
   if (horizontalScreenResolution_input < 150 || screenWidth_input < 100) {
->>>>>>> Add resolution callibration verification image
     throw new IllegalArgumentException("Screen dimensions too low. Can't resize!");
   }
 
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
-<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
-  return round(((0.1 * mm) * horizontalScreenResolution / (0.1 * screenWidth)) / displayDensity());
-=======
   return round(((0.1 * mm) * horizontalScreenResolution_input / (0.1 * screenWidth_input)) / displayDensity());
->>>>>>> Add resolution callibration verification image
 }
 
 // Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
@@ -216,6 +213,17 @@ PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentE
   }
 
   return temp;
+}
+
+// This function returns all the files in a directory as an array of Strings
+List<String> listFileNames(String dir) {
+  File file = new File(dir);
+  if (file.isDirectory()) {
+    return Arrays.asList(file.list());
+  } else {
+    // If it's not a directory
+    return null;
+  }
 }
 
 // exit button handler terminates the sketch
