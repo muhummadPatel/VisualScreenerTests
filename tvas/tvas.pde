@@ -108,3 +108,15 @@ void handler_exitBtn(){
     exit();
   }
 }
+
+// exit handler called before the sketch closed. Prints out the report to
+// report.txt. It prints the last plate on the screen (best guess of where the user stopped)
+void dispose(){
+  // add 1 to account for 0 indexing
+  int lastImage = activeImage + 1;
+
+  String[] report = new String[1];
+  report[0] = "last displayed plate: " + lastImage;
+
+  saveStrings("report.txt", report);
+}
