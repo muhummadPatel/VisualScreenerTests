@@ -102,7 +102,7 @@ void handler_nextBtn(){
 // exit button handler terminates the sketch
 void handler_exitBtn(){
   String title = "Confirm Exit";
-  String message = "Are you sure you want to exit this test?";
+  String message = "Are you sure you want to end this test?";
   int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
