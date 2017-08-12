@@ -10,8 +10,9 @@ ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
 Textlabel resolutionCallibrationInfoLabel;
 
-int stereoRed;
-int stereoGreen;
+int stereoRed, stereoGreen;
+String language;
+int horizontalScreenResolution, screenWidth;
 
 static final int TABS_HEIGHT = 50;
 static final int TABS_WIDTH = 150;
@@ -130,7 +131,11 @@ void setup() {
 
   resolutionCallibrationInfoLabel = cp5.addTextlabel("resolutionCallibrationInfoLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 250)
+<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
     .setText("When properly callibrated, the line below should measure 150mm end-to-end:")
+=======
+    .setText("When properly callibrated, the line below should measure 100mm end-to-end:")
+>>>>>>> Add resolution callibration verification image
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
   resolutionCallibrationImagePos = new PVector(colourWheelLeftX, 360);
@@ -159,9 +164,15 @@ void draw() {
 
   if(showResolutionCallibrationImage) {
     try {
+<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
       resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 150mm end-to-end:");
 
       image(fitImage(resolutionCallibrationImage, _mm(150), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
+=======
+      resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 100mm end-to-end:");
+
+      image(fitImage(resolutionCallibrationImage, _mm(100), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
+>>>>>>> Add resolution callibration verification image
     } catch (IllegalArgumentException e) {
       // no-op. Don't display the image when the user is changing the value
       resolutionCallibrationInfoLabel.setText("Please check the values above");
@@ -172,15 +183,26 @@ void draw() {
 // convert from a dimension in mm to screen pixels (based on callibration step)
 int _mm(float mm){
   // pull these values fresh from the input fields so the user can verify that they work as expected
+<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
   int horizontalScreenResolution = Integer.parseInt(screenResolutionInputTextField.getText());
   int screenWidth = Integer.parseInt(screenWidthInputTextField.getText());
 
   if (horizontalScreenResolution < 150 || screenWidth < 100) {
+=======
+  int horizontalScreenResolution_input = Integer.parseInt(screenResolutionInputTextField.getText());
+  int screenWidth_input = Integer.parseInt(screenWidthInputTextField.getText());
+
+  if (horizontalScreenResolution_input < 150 || screenWidth_input < 100) {
+>>>>>>> Add resolution callibration verification image
     throw new IllegalArgumentException("Screen dimensions too low. Can't resize!");
   }
 
   // divide by displayDensity to account for high-dpi displays (retina, etc.)
+<<<<<<< fc660c6379fa1cb4c7745656d5c7c6bd7fc6fa5e
   return round(((0.1 * mm) * horizontalScreenResolution / (0.1 * screenWidth)) / displayDensity());
+=======
+  return round(((0.1 * mm) * horizontalScreenResolution_input / (0.1 * screenWidth_input)) / displayDensity());
+>>>>>>> Add resolution callibration verification image
 }
 
 // Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
