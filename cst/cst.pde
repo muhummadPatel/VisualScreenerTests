@@ -108,3 +108,18 @@ void handler_exitBtn(){
     exit();
   }
 }
+
+// exit handler called before the sketch closed. Prints out the report to
+// report.txt. It prints the last plate on the screen (best guess of where the user stopped)
+// and the percentage opacity of that last image.
+void dispose(){
+  // add 1 to account for 0 indexing
+  float lastImage = activeImage + 1;
+  float contrastPercentage = (lastImage / images.length) * 100.0f;
+
+  String[] report = new String[2];
+  report[0] = "last displayed plate: " + lastImage;
+  report[1] = "contrast percentage: " + contrastPercentage;
+
+  saveStrings("report.txt", report);
+}
