@@ -5,6 +5,10 @@ import controlP5.*;
 int HORIZONTAL_SCREEN_RESOLUTION;
 int SCREEN_WIDTH;  // width in mm of the physical screen
 
+// settings
+JSONObject settings;
+JSONObject languageRepo;
+
 // GUI components
 ControlP5 cp5;
 Button startButton;
@@ -25,14 +29,15 @@ boolean testCompleted = false;
 void setup() {
   size(900, 650);
 
-  // Callibration step so that we can display things using real mm dimensions
-  try{
-    HORIZONTAL_SCREEN_RESOLUTION = Integer.parseInt(JOptionPane.showInputDialog("Please enter the horizontal resolution of your screen:"));
-    SCREEN_WIDTH = Integer.parseInt(JOptionPane.showInputDialog("Please enter the physical width of your screen in mm:"));
-  }catch(NumberFormatException e){
-    String message = "The value you entered was invalid. Please rerun the test.";
-    String title = "Invalid Input";
-    JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+  // load settings
+  settings = loadJSONObject("settings.json");
+  languageRepo = loadJSONObject(settings.getString("language") + ".json").getJSONObject("aat");
+
+  HORIZONTAL_SCREEN_RESOLUTION = settings.getInt("horizontal_screen_resolution", -1);
+  SCREEN_WIDTH = settings.getInt("screen_width", -1);
+
+  if(HORIZONTAL_SCREEN_RESOLUTION < 0 || SCREEN_WIDTH < 0) {
+    JOptionPane.showMessageDialog(null, i10n("message_missing_calibration_data"), i10n("title_missing_calibration_data"), JOptionPane.ERROR_MESSAGE);
     System.exit(0);
   }
 
@@ -42,11 +47,11 @@ void setup() {
   startButton = cp5.addButton("handler_startBtn")
     .setSize(100, 50)
     .setPosition(0, 0)
-    .setCaptionLabel("Start Test");
+    .setCaptionLabel(i10n("button_start_test"));
 
   instructionLabel = cp5.addTextlabel("instructionLabel")
     .setPosition(125, 12.5)
-    .setText("Press enter when the image goes out of focus")
+    .setText(i10n("prompt_test_instruction"))
     .setFont(createFont("", 20));
 
   exitButton = cp5.addButton("handler_exitBtn")
@@ -74,9 +79,7 @@ void draw() {
         // If we are in here, it means the image is no longer visible (cannot be
         // resized any smaller) and the user still has not clicked a button to
         // stop the test. So reset the test and ask them to retake it.
-        String message = "You did not press a key. Please retake the test.";
-        String title = "Incomplete Test";
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, i10n("message_incomplete_test"), i10n("title_incomplete_test"), JOptionPane.WARNING_MESSAGE);
 
         initTest();
       }
@@ -127,9 +130,7 @@ void handler_startBtn(){
 
 // exit button handler terminates the sketch
 void handler_exitBtn(){
-  String title = "Confirm Exit";
-  String message = "Are you sure you want to end this test? (record will be incomplete)";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_confirm_exit"), i10n("title_confirm_exit"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
   }
@@ -153,12 +154,14 @@ void dispose(){
     int finalWidth = pxToMm(scaledImg.width);
     report[0] = originalWidth + "/" + finalWidth;
 
-    String message = "Thank you, your results have been recorded.";
-    String title = "Test Complete";
-    JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(null, i10n("message_test_complete"), i10n("title_test_complete"), JOptionPane.INFORMATION_MESSAGE);
   }else{
     report[0] = "INC";
   }
 
   saveStrings("report.txt", report);
+}
+
+String i10n(String strKey) {
+  return languageRepo.getString(strKey, "<unknown prompt: " + strKey + ">");
 }

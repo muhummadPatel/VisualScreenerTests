@@ -18,5 +18,22 @@
     "prompt_save_changes": "Do you want to save your changes?",
     "title_reset_defaults": "Confirm Reset",
     "prompt_reset_defaults": "This will reset all settings to their default values. Are you sure?"
-  }
+  },
+  "aat": {
+    "prompt_horizontal_resolution": "Please enter the horizontal resolution of your screen:",
+    "prompt_screen_width": "Please enter the physical width of your screen in mm:",
+    "button_start_test": "start test",
+    "prompt_test_instruction": "Press enter when the image goes out of focus",
+    "button_end_test": "end test",
+    "title_confirm_exit": "Confirm Exit",
+    "prompt_confirm_exit": "Are you sure you want to end this test? (record will be incomplete)",
+    "title_test_complete": "Test Complete",
+    "message_test_complete": "Thank you, your results have been recorded.",
+    "title_invalid_input": "Invalid Input",
+    "message_invalid_input": "The value you entered was invalid. Please rerun the test.",
+    "title_incomplete_test": "Incomplete Test",
+    "message_incomplete_test": "You did not press a key. Please retake the test.",
+    "title_missing_calibration_data": "Missing calibration data",
+    "message_missing_calibration_data": "Could not find resolution calibration data. Please complete the resolution calibration step."
+    }
 }
