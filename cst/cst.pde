@@ -3,6 +3,10 @@ import javax.swing.JOptionPane;
 import controlP5.*;
 
 
+// settings
+JSONObject settings;
+JSONObject languageRepo;
+
 // sketch dimensions
 final int SKETCH_WIDTH = 900;
 final int SKETCH_HEIGHT = 650;
@@ -27,6 +31,10 @@ void settings(){
 }
 
 void setup() {
+  // load settings
+  settings = loadJSONObject("settings.json");
+  languageRepo = loadJSONObject(settings.getString("language") + ".json").getJSONObject("cst");
+
   cp5 = new ControlP5(this);
 
   // add the button bar
@@ -39,18 +47,18 @@ void setup() {
   Button prevButton = cp5.addButton("handler_prevBtn")
     .setSize(100, 50)
     .setPosition(0, BUTTON_BAR_HEIGHT)
-    .setCaptionLabel("Previous");
+    .setCaptionLabel(i10n("button_previous"));
 
   Button nextButton = cp5.addButton("handler_nextBtn")
     .setSize(100, 50)
     .setPosition(SKETCH_WIDTH - 100, BUTTON_BAR_HEIGHT)
-    .setCaptionLabel("Next");
+    .setCaptionLabel(i10n("button_next"));
 
   //add the exit button
   Button exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(SKETCH_WIDTH - 100, SKETCH_HEIGHT - 50)
-    .setCaptionLabel("End Test");
+    .setCaptionLabel(i10n("button_end_test"));
 
   // load all test images (assumes they are named 1.png, 2.png, etc.)
   images = new PImage[buttonBarLabels.length];
@@ -101,9 +109,7 @@ void handler_nextBtn(){
 
 // exit button handler terminates the sketch
 void handler_exitBtn(){
-  String title = "Confirm Exit";
-  String message = "Are you sure you want to end this test?";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_confirm_exit"), i10n("title_confirm_exit"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     exit();
   }
@@ -124,4 +130,8 @@ void dispose(){
   report[1] = "percentage opacity: " + opacityPercentage;
 
   saveStrings("report.txt", report);
+}
+
+String i10n(String strKey) {
+  return languageRepo.getString(strKey, "<unknown prompt: " + strKey + ">");
 }
