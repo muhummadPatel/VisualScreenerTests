@@ -8,6 +8,7 @@ Button exitButton;
 ColorWheel redWheel, greenWheel;
 ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
+Textlabel resolutionCallibrationInfoLabel;
 
 int stereoRed;
 int stereoGreen;
@@ -20,6 +21,12 @@ static final String TAB_LANGUAGE = "language";
 static final String TAB_RESOLUTION = "resolution";
 static final int COLOUR_WHEEL_R = 300;
 
+// To show/not-show verification image for resolution callibration tab.
+// Need to do this manually as there isn't another way to display non ControlP5
+// elements on only a specific tab unfortunately.
+boolean showResolutionCallibrationImage = false;
+PImage resolutionCallibrationImage;
+PVector resolutionCallibrationImagePos;
 
 void setup() {
   size(900, 650);
@@ -100,7 +107,8 @@ void setup() {
     .setSize(200, 30)
     .setLabel("")
     .setFont(createFont("", 14))
-    .setAutoClear(false)
+    .setAutoClear(true)
+    .setText("1080")
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
@@ -115,9 +123,18 @@ void setup() {
     .setSize(200, 30)
     .setLabel("")
     .setFont(createFont("", 14))
-    .setAutoClear(false)
+    .setAutoClear(true)
+    .setText("330")
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
+
+  resolutionCallibrationInfoLabel = cp5.addTextlabel("resolutionCallibrationInfoLabel")
+    .setPosition(colourWheelLeftX, TABS_HEIGHT + 250)
+    .setText("When properly callibrated, the line below should measure 150mm end-to-end:")
+    .setFont(createFont("", 20))
+    .moveTo(TAB_RESOLUTION);
+  resolutionCallibrationImagePos = new PVector(colourWheelLeftX, 360);
+  resolutionCallibrationImage = loadImage("resolutionCallibrationImage.png");
 
   // global (all tabs) buttons---------------------------
   exitButton = cp5.addButton("handler_exitBtn")
@@ -127,10 +144,56 @@ void setup() {
     .moveTo(TAB_GLOBAL);
 }
 
+void controlEvent(ControlEvent theControlEvent) {
+  if (theControlEvent.isTab()) {
+    if (theControlEvent.getTab().getName().equals(TAB_RESOLUTION)) {
+      showResolutionCallibrationImage = true;
+    } else {
+      showResolutionCallibrationImage = false;
+    }
+  }
+}
+
 void draw() {
   background(125);
 
-  fill(redWheel.getRGB());
+  if(showResolutionCallibrationImage) {
+    try {
+      resolutionCallibrationInfoLabel.setText("When properly callibrated, the line below should measure 150mm end-to-end:");
+
+      image(fitImage(resolutionCallibrationImage, _mm(150), _mm(90)), resolutionCallibrationImagePos.x, resolutionCallibrationImagePos.y);
+    } catch (IllegalArgumentException e) {
+      // no-op. Don't display the image when the user is changing the value
+      resolutionCallibrationInfoLabel.setText("Please check the values above");
+    }
+  }
+}
+
+// convert from a dimension in mm to screen pixels (based on callibration step)
+int _mm(float mm){
+  // pull these values fresh from the input fields so the user can verify that they work as expected
+  int horizontalScreenResolution = Integer.parseInt(screenResolutionInputTextField.getText());
+  int screenWidth = Integer.parseInt(screenWidthInputTextField.getText());
+
+  if (horizontalScreenResolution < 150 || screenWidth < 100) {
+    throw new IllegalArgumentException("Screen dimensions too low. Can't resize!");
+  }
+
+  // divide by displayDensity to account for high-dpi displays (retina, etc.)
+  return round(((0.1 * mm) * horizontalScreenResolution / (0.1 * screenWidth)) / displayDensity());
+}
+
+// Returns a copy of img, scaled down to fit inside maxWidth and maxHeight.
+// Preserves aspect ratio to avoid image distortion.
+PImage fitImage(PImage img, int maxWidth, int maxHeight) throws IllegalArgumentException{
+  PImage temp = img.get();
+
+  temp.resize(maxWidth, 0);
+  if(temp.height > maxHeight){
+    temp.resize(0, maxHeight);
+  }
+
+  return temp;
 }
 
 // exit button handler terminates the sketch
