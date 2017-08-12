@@ -9,6 +9,9 @@ ScrollableList languageDropdown;
 Textfield screenResolutionInputTextField, screenWidthInputTextField;
 Textlabel resolutionCalibrationInfoLabel;
 
+// GUI language settings
+JSONObject languageRepo;
+
 // Current settings loaded here
 JSONObject oldSettings;
 
@@ -46,13 +49,16 @@ void setup() {
     oldSettings = loadJSONObject("defaultSettings.json");
   }
 
+  // load language Strings
+  languageRepo = loadJSONObject(oldSettings.getString("language") + ".json").getJSONObject("calibration");
+
   // Set up the buttons and labels
   cp5 = new ControlP5(this);
 
   // colour settings tab---------------------------
   cp5.getTab(TAB_COLOUR)
     .activateEvent(true)
-    .setLabel("Colour")
+    .setLabel(i10n("title_tab_colour"))
     .setId(1)
     .setWidth(TABS_WIDTH)
     .setHeight(TABS_HEIGHT);
@@ -65,31 +71,31 @@ void setup() {
 
   cp5.addTextlabel("colourWheelInstructionLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 75)
-    .setText("Adjust the colours below to match your stereo glasses")
+    .setText(i10n("prompt_colour_settings"))
     .setFont(createFont("", 20))
     .moveTo(TAB_COLOUR);
 
   redWheel = cp5.addColorWheel("stereoRed", colourWheelLeftX, colourWheelYpos, COLOUR_WHEEL_R)
-    .setRGB(oldSettings.getInt("stereoRed"))
-    .setLabel("stereo red")
+    .setRGB(oldSettings.getInt("stereo_red"))
+    .setLabel(i10n("label_stereo_red"))
     .moveTo(TAB_COLOUR);
 
   greenWheel = cp5.addColorWheel("stereoGreen", colourWheelRightX, colourWheelYpos, COLOUR_WHEEL_R)
-    .setRGB(oldSettings.getInt("stereoGreen"))
-    .setLabel("stereo green")
+    .setRGB(oldSettings.getInt("stereo_green"))
+    .setLabel(i10n("label_stereo_green"))
     .moveTo(TAB_COLOUR);
 
   // Language settings tab---------------------------
   cp5.getTab(TAB_LANGUAGE)
     .activateEvent(true)
-    .setLabel("Language")
+    .setLabel(i10n("title_tab_language"))
     .setId(2)
     .setWidth(TABS_WIDTH)
     .setHeight(TABS_HEIGHT);
 
   cp5.addTextlabel("languageSelectionInstructionLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 75)
-    .setText("Please select the language to be used: ")
+    .setText(i10n("prompt_language_settings"))
     .setFont(createFont("", 20))
     .moveTo(TAB_LANGUAGE);
 
@@ -105,14 +111,14 @@ void setup() {
   // Resolution settings tab---------------------------
   cp5.getTab(TAB_RESOLUTION)
     .activateEvent(true)
-    .setLabel("Resolution")
+    .setLabel(i10n("title_tab_resolution"))
     .setId(3)
     .setWidth(TABS_WIDTH)
     .setHeight(TABS_HEIGHT);
 
   cp5.addTextlabel("screenResolutionInstructionLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 35)
-    .setText("Please enter the horizontal resolution of your screen:")
+    .setText(i10n("prompt_horizontal_resolution"))
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
 
@@ -122,13 +128,13 @@ void setup() {
     .setLabel("")
     .setFont(createFont("", 14))
     .setAutoClear(true)
-    .setText("" + oldSettings.getInt("horizontalScreenResolution"))
+    .setText("" + oldSettings.getInt("horizontal_screen_resolution"))
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
   cp5.addTextlabel("screenWidthInstructionLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 150)
-    .setText("Please enter the physical width of your screen in mm:")
+    .setText(i10n("prompt_screen_width"))
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
 
@@ -138,13 +144,13 @@ void setup() {
     .setLabel("")
     .setFont(createFont("", 14))
     .setAutoClear(true)
-    .setText("" + oldSettings.getInt("screenWidth"))
+    .setText("" + oldSettings.getInt("screen_width"))
     .setInputFilter(Textfield.INTEGER)
     .moveTo(TAB_RESOLUTION);
 
   resolutionCalibrationInfoLabel = cp5.addTextlabel("resolutionCalibrationInfoLabel")
     .setPosition(colourWheelLeftX, TABS_HEIGHT + 250)
-    .setText("When properly calibrated, the line below should measure 100mm end-to-end:")
+    .setText(i10n("label_resolution_calibration_image"))
     .setFont(createFont("", 20))
     .moveTo(TAB_RESOLUTION);
   resolutionCalibrationImagePos = new PVector(colourWheelLeftX, 360);
@@ -154,19 +160,19 @@ void setup() {
   cp5.addButton("handler_resetToDefault")
     .setSize(100, 50)
     .setPosition(0, height - 50)
-    .setCaptionLabel("Reset to Defaults")
+    .setCaptionLabel(i10n("button_reset_to_defaults"))
     .moveTo(TAB_GLOBAL);
 
   cp5.addButton("handler_saveBtn")
     .setSize(100, 50)
     .setPosition(width - 220, height - 50)
-    .setCaptionLabel("Save Settings")
+    .setCaptionLabel(i10n("button_save_settings"))
     .moveTo(TAB_GLOBAL);
 
   cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("Exit")
+    .setCaptionLabel(i10n("button_exit"))
     .moveTo(TAB_GLOBAL);
 }
 
@@ -189,12 +195,12 @@ void draw() {
 
   if(showResolutionCalibrationImage) {
     try {
-      resolutionCalibrationInfoLabel.setText("When properly calibrated, the line below should measure 100mm end-to-end:");
+      resolutionCalibrationInfoLabel.setText(i10n("label_resolution_calibration_image"));
 
       image(fitImage(resolutionCalibrationImage, _mm(100), _mm(90)), resolutionCalibrationImagePos.x, resolutionCalibrationImagePos.y);
     } catch (IllegalArgumentException e) {
       // no-op. Don't display the image when the user is changing the value
-      resolutionCalibrationInfoLabel.setText("Please check the values above");
+      resolutionCalibrationInfoLabel.setText(i10n("label_resolution_calibration_image_placeholder"));
     }
   }
 }
@@ -243,35 +249,35 @@ void handler_exitBtn(){
 }
 
 void handler_saveBtn(){
-  String title = "Save changes";
-  String message = "Do you wnat to save your changes?";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_save_changes"), i10n("title_save_changes"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     JSONObject newSettings = new JSONObject();
 
-    newSettings.setInt("stereoRed", stereoRed);
-    newSettings.setInt("stereoGreen", stereoGreen);
+    newSettings.setInt("stereo_red", stereoRed);
+    newSettings.setInt("stereo_green", stereoGreen);
     newSettings.setString("language", language.toLowerCase());
-    newSettings.setInt("horizontalScreenResolution", horizontalScreenResolution);
-    newSettings.setInt("screenWidth", screenWidth);
+    newSettings.setInt("horizontal_screen_resolution", horizontalScreenResolution);
+    newSettings.setInt("screen_width", screenWidth);
 
     saveJSONObject(newSettings, "data/customSettings.json");
   }
 }
 
 void handler_resetToDefault(){
-  String title = "Confirm Reset";
-  String message = "This will reset all settings to their default values. Are you sure?";
-  int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+  int reply = JOptionPane.showConfirmDialog(null, i10n("prompt_reset_defaults"), i10n("title_reset_defaults"), JOptionPane.YES_NO_OPTION);
   if(reply == JOptionPane.YES_OPTION){
     JSONObject defaultSettings = loadJSONObject("defaultSettings.json");
 
-    redWheel.setRGB(defaultSettings.getInt("stereoRed"));
-    greenWheel.setRGB(defaultSettings.getInt("stereoGreen"));
+    redWheel.setRGB(defaultSettings.getInt("stereo_red"));
+    greenWheel.setRGB(defaultSettings.getInt("stereo_green"));
 
     languageDropdown.setValue(languages.indexOf(defaultSettings.getString("language"))).open();
 
-    screenResolutionInputTextField.setText("" + defaultSettings.getInt("horizontalScreenResolution"));
-    screenWidthInputTextField.setText("" + defaultSettings.getInt("screenWidth"));
+    screenResolutionInputTextField.setText("" + defaultSettings.getInt("horizontal_screen_resolution"));
+    screenWidthInputTextField.setText("" + defaultSettings.getInt("screen_width"));
   }
+}
+
+String i10n(String strKey) {
+  return languageRepo.getString(strKey, "<unknown prompt: " + strKey + ">");
 }
