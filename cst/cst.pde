@@ -114,12 +114,14 @@ void handler_exitBtn(){
 // and the percentage opacity of that last image.
 void dispose(){
   // add 1 to account for 0 indexing
-  float lastImage = activeImage + 1;
-  float contrastPercentage = (lastImage / images.length) * 100.0f;
+  int lastImage = activeImage + 1;
+
+  // subtract from 100 to account for decreasing opacity/contrast
+  float opacityPercentage = 100.0f - (((float)lastImage / images.length) * 100.0f);
 
   String[] report = new String[2];
   report[0] = "last displayed plate: " + lastImage;
-  report[1] = "contrast percentage: " + contrastPercentage;
+  report[1] = "percentage opacity: " + opacityPercentage;
 
   saveStrings("report.txt", report);
 }
