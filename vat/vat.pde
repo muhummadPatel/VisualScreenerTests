@@ -14,10 +14,12 @@ ControlP5 cp5;
 Button nextButton;
 Button prevButton;
 Button exitButton;
+Textlabel readingsLabel;
 
 // Test images
 PImage[] images;
 float[] lineHeights = { 40, 20, 14, 10, 8, 6, 5, 4 };
+String[] readings = {"20/200", "20/100", "20/70", "20/50", "20/40", "20/30", "20/25", "20/20"};
 int activeImage;
 
 void setup() {
@@ -54,6 +56,11 @@ void setup() {
     .setPosition(width - 100, height - 50)
     .setCaptionLabel(i10n("button_end_test"));
 
+  readingsLabel = cp5.addTextlabel("readingsLabel")
+    .setPosition((width / 2) - 20, height - 30)
+    .setColorValue(color(0, 0, 0))
+    .setFont(createFont("", 20));
+
   loadAndScaleImages();
   activeImage = 0;
 }
@@ -61,9 +68,13 @@ void setup() {
 void draw() {
   background(255);
 
+  // Display the current active image
   float imgX = (width - images[activeImage].width) / 2;
   float imgY = (height - images[activeImage].height) / 2;
   image(images[activeImage], imgX, imgY);
+
+  // Update readingsLabel to show readingfor the currently active image
+  readingsLabel.setText(readings[activeImage]);
 }
 
 // convert from a dimension in mm to screen pixels (based on callibration step)
