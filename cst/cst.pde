@@ -14,7 +14,10 @@ final int SKETCH_HEIGHT = 650;
 // GUI related vars
 ControlP5 cp5;
 String[] buttonBarLabels = {
-  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"
+  "1", "2", "3", "4", "5", "6", "7"
+};
+float[] readings = {
+  100, 80, 60, 40, 20, 10, 2.5 // percentage opacity of the corresponding images
 };
 final int BUTTON_BAR_HEIGHT = 50;
 List<HashMap> buttonBarItems;
@@ -122,12 +125,9 @@ void dispose(){
   // add 1 to account for 0 indexing
   int lastImage = activeImage + 1;
 
-  // subtract from 100 to account for decreasing opacity/contrast
-  float opacityPercentage = 100.0f - (((float)lastImage / images.length) * 100.0f);
-
   String[] report = new String[2];
   report[0] = "last displayed plate: " + lastImage;
-  report[1] = "percentage opacity: " + opacityPercentage;
+  report[1] = "percentage opacity: " + readings[activeImage];
 
   saveStrings("report.txt", report);
 }
