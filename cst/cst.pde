@@ -127,7 +127,7 @@ void dispose(){
 
   String[] report = new String[2];
   report[0] = "last displayed plate: " + lastImage;
-  report[1] = "percentage opacity: " + readings[activeImage];
+  report[1] = "contrast sensitivity: " + readings[activeImage];
 
   saveStrings("report.txt", report);
 }
