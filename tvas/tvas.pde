@@ -14,7 +14,7 @@ JSONObject languageRepo;
 // GUI related vars
 ControlP5 cp5;
 String[] buttonBarLabels = {
-  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+  "1", "2", "3", "4"
 };
 final int BUTTON_BAR_HEIGHT = 50;
 List<HashMap> buttonBarItems;
