@@ -57,7 +57,7 @@ void setup() {
   exitButton = cp5.addButton("handler_exitBtn")
     .setSize(100, 50)
     .setPosition(width - 100, height - 50)
-    .setCaptionLabel("End Test");
+    .setCaptionLabel(i10n("button_end_test"));
 
   // load the image and fit it to a predefined maximum dimension in mm
   originalImg = loadImage("testImage.png");
